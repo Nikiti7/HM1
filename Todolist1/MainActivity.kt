@@ -26,20 +26,47 @@ class MainActivity : AppCompatActivity() {
         val resultTextView = findViewById<TextView>(R.id.TextView_2)
 
         startRaceButton.setOnClickListener {
-            val numCars = numCarsEditText.text.toString().toInt()
-            val cars = List(numCars) { getRandomCar() }
-            val raceResult = races(cars)
-            resultTextView.text = raceResult
+//            val numCars = numCarsEditText.text.toString().toInt()
+//            val cars = List(numCars) { getRandomCar() }
+//            val raceResult = races(cars)
+//            resultTextView.text = raceResult
+            val numCars = try {
+                numCarsEditText.text.toString().toInt()
+            } catch (e: NumberFormatException) {
+                Toast.makeText(this, "Введите количество автомобилей:", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (numCars <= 0) {
+                Toast.makeText(
+                    this,
+                    "Количество автомобилей должно быть больше 0",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                startRace(numCars)
+            }
         }
     }
 
-    open class Car(var brand: String, var model: String, var year: Int, val maxSpeed: Int) {
+    open class Car(
+        private var brand: String,
+        private var model: String,
+        private var year: Int,
+        val maxSpeed: Int
+    ) {
         open fun getInfo() {
             println("Brand: $brand, Model: $model, Year: $year, Max Speed: $maxSpeed km/h")
         }
     }
 
-    class Sedan(brand: String, model: String, year: Int, maxSpeed: Int, val trunkCapacity: Int) :
+    class Sedan(
+        brand: String,
+        model: String,
+        year: Int,
+        maxSpeed: Int,
+        private val trunkCapacity: Int
+    ) :
         Car(brand, model, year, maxSpeed) {
         override fun getInfo() {
             super.getInfo()
@@ -47,7 +74,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class SUV(brand: String, model: String, year: Int, maxSpeed: Int, val driveType: String) :
+    class SUV(
+        brand: String,
+        model: String,
+        year: Int,
+        maxSpeed: Int,
+        private val driveType: String
+    ) :
         Car(brand, model, year, maxSpeed) {
         override fun getInfo() {
             super.getInfo()
@@ -55,7 +88,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class Coupe(brand: String, model: String, year: Int, maxSpeed: Int, val horsePower: Int) :
+    class Coupe(
+        brand: String,
+        model: String,
+        year: Int,
+        maxSpeed: Int,
+        private val horsePower: Int
+    ) :
         Car(brand, model, year, maxSpeed) {
         override fun getInfo() {
             super.getInfo()
@@ -68,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         model: String,
         year: Int,
         maxSpeed: Int,
-        val cabinСapacity: Int
+        private val cabinСapacity: Int
     ) :
         Car(brand, model, year, maxSpeed) {
         override fun getInfo() {
@@ -101,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getRandomCar(): Car {
+    private fun getRandomCar(): Car {
         val brands = listOf("Mercedes", "BMW", "Porsche 911", "Mazda")
         val models = listOf("Benz", "X6", "Turbo S", "MX-5 Miata")
         val driveTypes = listOf("FWD", "RWD", "AWD")
@@ -121,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun races(cars: List<Car>): String {
+    private fun startRace(cars: List<Car>): String {
         val Result = StringBuilder()
         var сircle = 1
         var rivals = cars.shuffled() //перемешиваем машинки
